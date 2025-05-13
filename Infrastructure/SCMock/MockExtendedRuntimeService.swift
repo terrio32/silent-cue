@@ -16,7 +16,7 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
     public var getSessionStateCallCount = 0
     public var stopSessionCallCount = 0
 
-    // Parameters passed to startSession(duration:targetEndTime:)
+    // startSession(duration:targetEndTime:) に渡されるパラメータ
     public var lastStartSessionDuration: TimeInterval?
     public var lastStartSessionTargetEndTime: Date?
 

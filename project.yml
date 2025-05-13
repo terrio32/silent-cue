@@ -95,6 +95,9 @@ targets:
         CFBundleDisplayName: SilentCue
         WKApplicationRefreshBackgroundTaskModes:
           - background-refresh-on-schedule
+        WKBackgroundModes:
+          - background-refresh-on-schedule
+          - extended-runtime-session
         WKBackgroundTasks:
           - background-fetch
           - background-processing

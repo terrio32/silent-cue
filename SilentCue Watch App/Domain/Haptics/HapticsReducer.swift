@@ -28,7 +28,7 @@ struct HapticsReducer: Reducer {
                     return .merge(
                         effect,
                         .run { [type] _ in
-                            hapticsService.play(type.wkHapticType.rawValue)
+                            hapticsService.play(type.wkHapticType)
                         }
                         .cancellable(id: CancelID.haptic)
                     )

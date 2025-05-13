@@ -2,14 +2,10 @@ import ComposableArchitecture
 import SCShared
 import SwiftUI
 
-// MARK: - メインビュー
-
 struct SetTimerView: View {
     let store: StoreOf<TimerReducer>
     var onSettingsButtonTapped: () -> Void
     var onTimerStart: () -> Void
-
-    // MARK: - Body
 
     var body: some View {
         WithViewStore(store, observe: { $0 }, content: { viewStore in
@@ -51,8 +47,6 @@ struct SetTimerView: View {
             }
         })
     }
-
-    // MARK: - Private Components
 
     @ViewBuilder
     private func modeSelectionArea(_ viewStore: ViewStoreOf<TimerReducer>) -> some View {
@@ -106,8 +100,7 @@ struct SetTimerView: View {
         initialState: TimerReducer.State(),
         reducer: { TimerReducer() }
     )
-
-    // SetTimerView を NavigationView でラップしてツールバーを表示
+    
     NavigationView {
         SetTimerView(
             store: previewStore,

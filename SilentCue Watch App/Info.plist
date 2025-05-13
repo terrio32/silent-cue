@@ -26,6 +26,11 @@
 	<array>
 		<string>background-refresh-on-schedule</string>
 	</array>
+	<key>WKBackgroundModes</key>
+	<array>
+		<string>background-refresh-on-schedule</string>
+		<string>extended-runtime-session</string>
+	</array>
 	<key>WKBackgroundRefresh</key>
 	<true/>
 	<key>WKBackgroundTasks</key>

@@ -22,22 +22,22 @@ final class HapticsServiceTests: XCTestCase {
         let hapticType2: WKHapticType = .failure
 
         // 最初の呼び出し
-        service.play(hapticType1.rawValue)
+        service.play(hapticType1)
         XCTAssertEqual(service.playCallCount, 1)
         XCTAssertEqual(service.lastPlayedHapticType, hapticType1)
-        XCTAssertEqual(service.playedHapticTypes, [hapticType1.rawValue])
+        XCTAssertEqual(service.playedHapticTypes, [hapticType1])
 
         // ２回目の呼び出し
-        service.play(hapticType2.rawValue)
+        service.play(hapticType2)
         XCTAssertEqual(service.playCallCount, 2)
         XCTAssertEqual(service.lastPlayedHapticType, hapticType2)
-        XCTAssertEqual(service.playedHapticTypes, [hapticType1.rawValue, hapticType2.rawValue])
+        XCTAssertEqual(service.playedHapticTypes, [hapticType1, hapticType2])
     }
 
     // モックの状態がリセットされるか
     func testReset() async {
-        service.play(WKHapticType.start.rawValue)
-        service.play(WKHapticType.stop.rawValue)
+        service.play(WKHapticType.start)
+        service.play(WKHapticType.stop)
 
         service.reset()
 

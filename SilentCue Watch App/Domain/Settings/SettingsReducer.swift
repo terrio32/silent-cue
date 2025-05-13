@@ -51,7 +51,7 @@ struct SettingsReducer: Reducer {
                     state.isPreviewingHaptic = true
 
                     return .merge(
-                        .run { _ in hapticsService.play(hapticType.wkHapticType.rawValue) },
+                        .run { _ in hapticsService.play(hapticType.wkHapticType) },
 
                         .run { [hapticType] send in
                             for await _ in clock.timer(interval: .seconds(hapticType.interval)) {
@@ -70,7 +70,7 @@ struct SettingsReducer: Reducer {
                 case .hapticPreviewTick:
                     guard state.isPreviewingHaptic else { return .none }
                     let hapticType = state.selectedHapticType
-                    return .run { _ in hapticsService.play(hapticType.wkHapticType.rawValue) }
+                    return .run { _ in hapticsService.play(hapticType.wkHapticType) }
 
                 case .stopHapticPreview:
                     guard state.isPreviewingHaptic else { return .none }

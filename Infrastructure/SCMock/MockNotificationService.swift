@@ -3,14 +3,13 @@ import Foundation
 import SCProtocol
 import UserNotifications
 
-// Mock implementation for NotificationServiceProtocol
 public class MockNotificationService: NotificationServiceProtocol {
-    // Control properties for testing
+    // テスト用制御プロパティ
     public var mockAuthorizationStatus: UNAuthorizationStatus = .notDetermined
     public var requestAuthorizationShouldSucceed: Bool = true
     public var addRequestShouldThrowError: Error? = nil
 
-    // Track calls and data for verification
+    // 検証のための呼び出しとデータを追跡
     public var requestAuthorizationCallCount = 0
     public var getAuthorizationStatusCallCount = 0
     public var addRequestCallCount = 0
@@ -26,7 +25,7 @@ public class MockNotificationService: NotificationServiceProtocol {
         requestAuthorizationCallCount += 1
         print("MockNotificationService: Requesting authorization (will return \(requestAuthorizationShouldSucceed))")
         if requestAuthorizationShouldSucceed {
-            mockAuthorizationStatus = .authorized // Simulate granting authorization
+            mockAuthorizationStatus = .authorized
         }
         return requestAuthorizationShouldSucceed
     }
@@ -61,7 +60,7 @@ public class MockNotificationService: NotificationServiceProtocol {
         print("MockNotificationService: Removing all pending requests")
     }
 
-    // Reset function for testing
+    // テスト用リセット関数
     public func reset() {
         mockAuthorizationStatus = .notDetermined
         requestAuthorizationShouldSucceed = true

@@ -3,17 +3,15 @@
     import Dependencies
     import Foundation
     import SCProtocol
-    import UserNotifications // Import if needed for types like UNAuthorizationStatus
+    import UserNotifications
 
-    // Preview用のNotificationService実装
     public class PreviewNotificationService: NotificationServiceProtocol {
-        // Track status or requests if needed for preview inspection
+        // プレビューでの検査に必要な場合にステータスやリクエストを追跡
         public var authorizationStatus: UNAuthorizationStatus = .notDetermined
         private var addedRequests: [String] = []
 
         public init() {}
 
-        // --- Protocol Methods ---
         public func requestAuthorization() async -> Bool {
             // プレビューでは常に許可されたと仮定、または特定の状態をシミュレート
             print("PreviewNotificationService: Requesting authorization (simulating granted).")

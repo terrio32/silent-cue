@@ -140,11 +140,7 @@ public class LiveNotificationService: NotificationServiceProtocol {
         }
     }
 
-    // MARK: - Helper Methods (Private or Internal)
-
-    // These might be useful for creating content or triggers if needed internally
-
-    // Example: Creates standard notification content
+    // 例: 標準の通知コンテンツを作成します
     private func createNotificationContent(
         title: String,
         body: String,
@@ -157,7 +153,7 @@ public class LiveNotificationService: NotificationServiceProtocol {
         return content
     }
 
-    // Example: Creates a time interval trigger
+    // 例: 時間間隔トリガーを作成します
     private func createTimeIntervalTrigger(
         timeInterval: TimeInterval,
         repeats: Bool = false
@@ -166,11 +162,11 @@ public class LiveNotificationService: NotificationServiceProtocol {
     }
 }
 
-// MARK: - UNUserNotificationCenter Extension (Optional)
+// MARK: - UNUserNotificationCenter 拡張機能 (オプション)
 
-// If frequently used custom logic is needed, an extension can be helpful.
+// 頻繁に使用されるカスタムロジックが必要な場合、拡張機能が役立ちます。
 extension UNUserNotificationCenter {
-    // Convenience method example (consider if it truly simplifies things)
+    // 便利なメソッドの例 (本当に物事を単純化するかどうかを検討してください)
     func addNotification(
         identifier: String,
         title: String,

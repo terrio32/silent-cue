@@ -9,7 +9,7 @@ public class LiveExtendedRuntimeService: NSObject, WKExtendedRuntimeSessionDeleg
     private var sessionContinuation: CheckedContinuation<Bool, Never>?
     private var expirationHandler: (() -> Void)?
 
-    // Expose completion events as a public AsyncStream
+    // 完了イベントを公開 AsyncStream として公開
     private let completionStreamContinuation: AsyncStream<Void>.Continuation
     public let completionEvents: AsyncStream<Void>
 
@@ -49,12 +49,10 @@ public class LiveExtendedRuntimeService: NSObject, WKExtendedRuntimeSessionDeleg
     public func invalidateSession() {
         session?.invalidate()
         session = nil
-        sessionContinuation = nil // Clean up continuation
-        // completionStreamContinuation.finish() // Should this finish here?
+        sessionContinuation = nil
     }
 
     public func stopSession() {
-        // Alias for invalidateSession based on potential older protocol versions
         invalidateSession()
     }
 
@@ -66,11 +64,10 @@ public class LiveExtendedRuntimeService: NSObject, WKExtendedRuntimeSessionDeleg
 
     public func extendedRuntimeSessionDidStart(_: WKExtendedRuntimeSession) {
         sessionContinuation?.resume(returning: true)
-        sessionContinuation = nil // Clean up continuation
+        sessionContinuation = nil
     }
 
     public func extendedRuntimeSessionWillExpire(_: WKExtendedRuntimeSession) {
-        // Handle expiration if needed, perhaps call the expirationHandler
         expirationHandler?()
     }
 
@@ -79,16 +76,13 @@ public class LiveExtendedRuntimeService: NSObject, WKExtendedRuntimeSessionDeleg
         didInvalidateWith _: WKExtendedRuntimeSessionInvalidationReason,
         error _: Error?
     ) {
-        sessionContinuation?.resume(returning: false) // Indicate failure or invalidation
-        sessionContinuation = nil // Clean up continuation
+        sessionContinuation?.resume(returning: false)
+        sessionContinuation = nil
         session = nil
         completionStreamContinuation.yield(())
-        // completionStreamContinuation.finish() // Finish stream on invalidation
     }
 
     public func extendedRuntimeSession(_: WKExtendedRuntimeSession, ranOutOfBackgroundTimeWith _: TimeInterval) {
-        // Handle running out of background time if needed
-        // completionStreamContinuation.yield(())
-        // completionStreamContinuation.finish() // Maybe finish here too?
+        // このデリゲートメソッドは現時点では何も処理を行いません。
     }
 }

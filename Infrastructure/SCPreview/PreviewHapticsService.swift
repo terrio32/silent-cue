@@ -9,25 +9,21 @@
     public class PreviewHapticsService: HapticsServiceProtocol {
         public init() {}
 
-        public func play(_ type: Int) {
-            // プレビューでは実際の触覚フィードバックを再生せず、ログ出力などで代替
-            print("PreviewHapticsService: Playing haptic type (Int): \(type)")
-        }
-
-        func play(_ type: WKHapticType) async {
-            // 実際の振動は行わず、コンソールにログを出力する
+        // プロトコルに合わせてシグネチャを変更
+        public func play(_ type: WKHapticType) {
+            // プレビューでは実際の触覚フィードバックを再生せず、ログ出力で代替
             let typeName = hapticTypeName(type)
-            print("🫨 [プレビュー] HapticsService: 再生 \(typeName)") // ログ出力
+            print("PreviewHapticsService: Playing haptic type: \(typeName) (Enum: \(type))")
         }
 
         // WKHapticType から可読な名前を取得するヘルパー (任意)
         private func hapticTypeName(_ type: WKHapticType) -> String {
             switch type {
-                // Keep only cases mapped from HapticType enum
+                // HapticType enum からマップされたケースのみ保持
                 case .success: return "Success"
                 case .retry: return "Retry"
                 case .directionUp: return "DirectionUp"
-                @unknown default:
+                default:
                     return "Unknown (\(type.rawValue))"
             }
         }

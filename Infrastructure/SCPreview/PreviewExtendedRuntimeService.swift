@@ -3,11 +3,9 @@
     import Dependencies
     import Foundation
     import SCProtocol
-    import WatchKit // For WKExtendedRuntimeSessionState
+    import WatchKit
 
-    // Preview用のExtendedRuntimeService実装
     public class PreviewExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
-        // Expose a dummy stream for preview
         public let completionEvents: AsyncStream<Void> = AsyncStream { _ in }
         private var sessionState: WKExtendedRuntimeSessionState = .notStarted
 
@@ -21,15 +19,15 @@
         }
 
         public func startSession(duration _: TimeInterval, targetEndTime _: Date?) {
-            // Handle legacy/alternate signature if necessary
+            // 必要に応じてレガシー/代替シグネチャを処理
             print("PreviewExtendedRuntimeService: Legacy startSession(duration:targetEndTime:) called.")
-            Task { let _ = await startSession() } // Simulate starting via the async method
+            Task { let _ = await startSession() } // 非同期メソッド経由での開始をシミュレート
         }
 
         public func invalidateSession() {
             print("PreviewExtendedRuntimeService: Invalidating session.")
             sessionState = .invalid
-            // Potentially yield completion event if needed for preview testing
+            // プレビューテストで必要な場合に完了イベントを発生させる可能性がある
         }
 
         public func stopSession() {
