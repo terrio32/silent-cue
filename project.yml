@@ -257,8 +257,10 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         ENABLE_BITCODE: NO
       configs:
-        Debug: {}
-        Release: {}
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue.watchkitapp.Tests
+        Release:
+          PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue.watchkitapp.Tests
 
   "SilentCue Watch AppUITests":
     type: bundle.ui-testing
@@ -275,8 +277,10 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         ENABLE_BITCODE: NO
       configs:
-        Debug: {}
-        Release: {}
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue.watchkitapp.UITests
+        Release:
+          PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue.watchkitapp.UITests
 
 schemes:
   "SilentCue Watch App":

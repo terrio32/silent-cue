@@ -45,7 +45,7 @@ final class NotificationServiceTests: XCTestCase {
     func testGetAuthorizationStatus() async {
         let testCases: [UNAuthorizationStatus] = [.authorized, .denied]
 
-        for (index, statusToSet) in testCases.enumerated() {
+        for (_, statusToSet) in testCases.enumerated() {
             service.mockAuthorizationStatus = statusToSet
 
             let status = await service.getAuthorizationStatus()

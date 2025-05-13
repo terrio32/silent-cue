@@ -68,7 +68,7 @@ final class TimerBackgroundHandlingTests: XCTestCase {
 
         let finishDate = fixedNow.addingTimeInterval(TimeInterval(expectedInitialSeconds))
 
-        let store = TestStore(initialState: initialState) {
+        let store = await TestStore(initialState: initialState) {
             TimerReducer()
         } withDependencies: {
             $0.date = DateGenerator.constant(fixedNow)
@@ -89,7 +89,9 @@ final class TimerBackgroundHandlingTests: XCTestCase {
         }
 
         // 2. 時間経過をシミュレート (バックグラウンド想定のためティック受信なし)
-        store.dependencies.date = DateGenerator.constant(finishDate)
+        await MainActor.run {
+            store.dependencies.date = DateGenerator.constant(finishDate)
+        }
 
         // 3. バックグラウンド完了イベントをシミュレート
         extendedRuntimeService.triggerCompletion()
@@ -190,7 +192,9 @@ final class TimerBackgroundHandlingTests: XCTestCase {
         }
 
         // 2. 時間経過とバックグラウンド完了をシミュレート
-        store.dependencies.date = DateGenerator.constant(finishDate)
+        await MainActor.run {
+            store.dependencies.date = DateGenerator.constant(finishDate)
+        }
 
         // 3. バックグラウンド完了イベントをトリガー
         extendedRuntimeService.triggerCompletion()

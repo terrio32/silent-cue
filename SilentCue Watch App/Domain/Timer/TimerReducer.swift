@@ -149,7 +149,6 @@ struct TimerReducer: Reducer {
         state.targetEndDate = unwrappedTargetEndDate
 
         let totalSeconds = state.totalSeconds
-        let timerDurationMinutes = state.timerDurationMinutes
 
         let tickerEffect = Effect<Action>.run { send in
             for await _ in clock.timer(interval: .seconds(1)) {
