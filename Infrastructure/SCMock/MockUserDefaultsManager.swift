@@ -5,7 +5,7 @@ import SCProtocol
 import SCShared
 
 public class MockUserDefaultsManager: UserDefaultsServiceProtocol {
-    /// UserDefaultsの代わりとなるインメモリ辞書
+    // UserDefaultsの代わりとなるインメモリ辞書
     public var storage: [String: Any] = [:]
 
     // 検証用の呼び出し追跡

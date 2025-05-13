@@ -59,12 +59,12 @@ final class UserDefaultsManagerTests: XCTestCase {
         mockUserDefaultsManager.set(true, forKey: keyBool)
         mockUserDefaultsManager.set("testHaptic", forKey: keyString)
 
-        XCTAssertFalse(mockUserDefaultsManager.getAllValues().isEmpty) // 値があることを確認
+        XCTAssertFalse(mockUserDefaultsManager.getAllValues().isEmpty)
         mockUserDefaultsManager.removeAll()
 
         XCTAssertNil(mockUserDefaultsManager.object(forKey: keyBool))
         XCTAssertNil(mockUserDefaultsManager.object(forKey: keyString))
-        XCTAssertTrue(mockUserDefaultsManager.getAllValues().isEmpty) // removeAll で空になることを確認
+        XCTAssertTrue(mockUserDefaultsManager.getAllValues().isEmpty)
     }
 
     // 値に nil を設定するとキーが削除されるか検証

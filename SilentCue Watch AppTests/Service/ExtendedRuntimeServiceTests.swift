@@ -5,29 +5,27 @@ import SCMock
 import WatchKit
 import XCTest
 
-@MainActor
 final class ExtendedRuntimeServiceTests: XCTestCase {
     var service: MockExtendedRuntimeService!
     var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
-        service = MockExtendedRuntimeService() // 各テスト前にモックを初期化
+        service = MockExtendedRuntimeService()
     }
 
     override func tearDown() {
-        service = nil // サービス解放
+        service = nil
         cancellables.removeAll()
         super.tearDown()
     }
 
-    // ストリームの完了を待つヘルパー
+    // ストリームの完了を待つ
     private func awaitStreamCompletion(_ stream: AsyncStream<Void>, timeout: TimeInterval = 1.0) async {
         let expectation = XCTestExpectation(description: "ストリーム完了を待機")
         var task: Task<Void, Never>?
         task = Task {
             for await _ in stream {}
-            // ストリーム完了
             expectation.fulfill()
             task?.cancel()
         }
@@ -37,7 +35,7 @@ final class ExtendedRuntimeServiceTests: XCTestCase {
         task?.cancel() // タスクキャンセルを保証
     }
 
-    // ストリームの値発行と完了を待つヘルパー
+    // ストリームの値発行と完了を待つ
     private func awaitStreamYieldAndCompletion(_ stream: AsyncStream<Void>, timeout: TimeInterval = 1.0) async {
         let yieldExpectation = XCTestExpectation(description: "ストリームの値発行を待機")
         let completionExpectation = XCTestExpectation(description: "ストリーム完了を待機")

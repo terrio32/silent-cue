@@ -6,7 +6,7 @@ import XCTest
 final class NotificationServiceTests: XCTestCase {
     var service: MockNotificationService!
 
-    @MainActor // Add MainActor since setup involves UI-related mock setup potentially
+    @MainActor
     override func setUp() {
         super.setUp()
         service = MockNotificationService()
@@ -168,42 +168,3 @@ final class NotificationServiceTests: XCTestCase {
         XCTAssertNil(service.addRequestShouldThrowError)
     }
 }
-
-/*
- // モック構造の例
- class MockUNUserNotificationCenter {
-     var authorizationRequested = false
-     var requestedOptions: UNAuthorizationOptions? = nil
-     var settingsToReturn: UNNotificationSettings = /* モック設定を提供 */
-     var addedRequests: [UNNotificationRequest] = []
-     var removedIdentifiers: [String] = []
-
-     func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> Void) {
-         authorizationRequested = true
-         requestedOptions = options
-         // 応答をシミュレート
-         DispatchQueue.main.async {
-             completionHandler(true, nil) // または false、またはエラー付き
-         }
-     }
-
-     func getNotificationSettings(completionHandler: @escaping (UNNotificationSettings) -> Void) {
-         DispatchQueue.main.async {
-             completionHandler(settingsToReturn)
-         }
-     }
-
-     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)? = nil) {
-         addedRequests.append(request)
-         DispatchQueue.main.async {
-             completionHandler?(nil) // 成功またはエラーをシミュレート
-         }
-     }
-
-     func removePendingNotificationRequests(withIdentifiers identifiers: [String]) {
-         removedIdentifiers.append(contentsOf: identifiers)
-     }
-
-     // 必要に応じて他の UNUserNotificationCenter メソッドをモックします
- }
- */

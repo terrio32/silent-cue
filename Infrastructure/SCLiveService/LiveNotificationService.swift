@@ -140,7 +140,7 @@ public class LiveNotificationService: NotificationServiceProtocol {
         }
     }
 
-    // 例: 標準の通知コンテンツを作成します
+    // 標準の通知コンテンツを作成
     private func createNotificationContent(
         title: String,
         body: String,
@@ -153,7 +153,7 @@ public class LiveNotificationService: NotificationServiceProtocol {
         return content
     }
 
-    // 例: 時間間隔トリガーを作成します
+    // 時間間隔トリガーを作成
     private func createTimeIntervalTrigger(
         timeInterval: TimeInterval,
         repeats: Bool = false
@@ -162,11 +162,11 @@ public class LiveNotificationService: NotificationServiceProtocol {
     }
 }
 
-// MARK: - UNUserNotificationCenter 拡張機能 (オプション)
+// MARK: - UNUserNotificationCenter 拡張機能
 
-// 頻繁に使用されるカスタムロジックが必要な場合、拡張機能が役立ちます。
+// 頻繁に使用されるカスタムロジックが必要な場合に拡張機能を使用します。
 extension UNUserNotificationCenter {
-    // 便利なメソッドの例 (本当に物事を単純化するかどうかを検討してください)
+    // 便利なメソッド
     func addNotification(
         identifier: String,
         title: String,

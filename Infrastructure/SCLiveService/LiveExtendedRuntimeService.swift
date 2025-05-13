@@ -22,14 +22,14 @@ public class LiveExtendedRuntimeService: NSObject, WKExtendedRuntimeSessionDeleg
         super.init()
     }
 
-    /// 拡張ランタイムセッションを開始する
+    // 拡張ランタイムセッションを開始する
     public func startSession(duration _: TimeInterval, targetEndTime _: Date?) {
         Task {
             _ = await startSession()
         }
     }
 
-    /// 拡張ランタイムセッションを開始する
+    // 拡張ランタイムセッションを開始する
     public func startSession() async -> Bool {
         let newSession = WKExtendedRuntimeSession()
 
@@ -45,7 +45,7 @@ public class LiveExtendedRuntimeService: NSObject, WKExtendedRuntimeSessionDeleg
         }
     }
 
-    /// 拡張ランタイムセッションを停止する
+    // 拡張ランタイムセッションを停止する
     public func invalidateSession() {
         session?.invalidate()
         session = nil
@@ -80,9 +80,5 @@ public class LiveExtendedRuntimeService: NSObject, WKExtendedRuntimeSessionDeleg
         sessionContinuation = nil
         session = nil
         completionStreamContinuation.yield(())
-    }
-
-    public func extendedRuntimeSession(_: WKExtendedRuntimeSession, ranOutOfBackgroundTimeWith _: TimeInterval) {
-        // このデリゲートメソッドは現時点では何も処理を行いません。
     }
 }

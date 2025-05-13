@@ -3,7 +3,6 @@ import SCMock
 @testable import SilentCue_Watch_App
 import XCTest
 
-@MainActor
 final class TimerBackgroundHandlingTests: XCTestCase {
     var store: TestStore<TimerState, TimerAction>!
     var mockUserDefaults: MockUserDefaultsManager!
@@ -148,7 +147,7 @@ final class TimerBackgroundHandlingTests: XCTestCase {
             return
         }
 
-        let store = TestStore(initialState: initialState) {
+        let store = await TestStore(initialState: initialState) {
             TimerReducer()
         } withDependencies: {
             $0.date = DateGenerator.constant(fixedStartDate)
