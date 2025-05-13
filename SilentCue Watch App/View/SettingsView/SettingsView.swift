@@ -28,7 +28,7 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        dismiss()
+                        viewStore.send(.backButtonTapped)
                     } label: {
                         Image(systemName: "chevron.left")
                             .aspectRatio(contentMode: .fit)

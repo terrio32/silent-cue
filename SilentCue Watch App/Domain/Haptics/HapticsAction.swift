@@ -7,6 +7,11 @@ enum HapticsAction: Equatable {
     case startHaptic(HapticType)
     case stopHaptic
 
+    // 設定画面でのハプティックプレビュー
+    case startPreview(HapticType)
+    case previewTick
+    case stopPreview
+
     // 設定
     case updateHapticSettings(type: HapticType)
 }

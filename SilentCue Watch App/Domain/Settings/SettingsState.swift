@@ -4,5 +4,4 @@ import SCShared
 struct SettingsState: Equatable {
     var selectedHapticType: HapticType = .standard
     var isSettingsLoaded = false
-    var isPreviewingHaptic = false
 }

@@ -10,8 +10,6 @@ struct SettingsReducer: Reducer {
 
     private enum CancelID {
         case saveSettings
-        case hapticPreviewTimer
-        case hapticPreviewTimeout
     }
 
     @Dependency(\.userDefaultsService) var userDefaultsService
@@ -35,71 +33,17 @@ struct SettingsReducer: Reducer {
                     return .none
 
                 case let .selectHapticType(type):
-                    let stopPreviewEffect: Effect<Action> = state.isPreviewingHaptic
-                        ? .send(.stopHapticPreview)
-                        : .none
                     state.selectedHapticType = type
-                    return .merge(
-                        stopPreviewEffect,
-                        .send(.internal(.saveSettingsEffect)),
-                        .send(.startHapticPreview(type))
-                    )
-
-                case let .startHapticPreview(hapticType):
-                    guard !state.isPreviewingHaptic else { return .none }
-
-                    state.isPreviewingHaptic = true
-
-                    return .merge(
-                        .run { _ in hapticsService.play(hapticType.wkHapticType) },
-
-                        .run { [hapticType] send in
-                            for await _ in clock.timer(interval: .seconds(hapticType.interval)) {
-                                await send(SettingsAction.hapticPreviewTick)
-                            }
-                        }
-                        .cancellable(id: CancelID.hapticPreviewTimer, cancelInFlight: true),
-
-                        .run { send in
-                            try await clock.sleep(for: .seconds(3))
-                            await send(.stopHapticPreview)
-                        }
-                        .cancellable(id: CancelID.hapticPreviewTimeout, cancelInFlight: true)
-                    )
-
-                case .hapticPreviewTick:
-                    guard state.isPreviewingHaptic else { return .none }
-                    let hapticType = state.selectedHapticType
-                    return .run { _ in hapticsService.play(hapticType.wkHapticType) }
-
-                case .stopHapticPreview:
-                    guard state.isPreviewingHaptic else { return .none }
-                    state.isPreviewingHaptic = false
-                    return .merge(
-                        .cancel(id: CancelID.hapticPreviewTimer),
-                        .cancel(id: CancelID.hapticPreviewTimeout)
-                    )
-
-                case let .previewHapticFeedback(type):
-                    return .send(.startHapticPreview(type))
-
-                case .previewHapticCompleted:
-                    return .send(.stopHapticPreview)
+                    return .send(.saveSettings)
 
                 case .saveSettings:
-                    return .send(.internal(.saveSettingsEffect))
+                    return .run { [selectedType = state.selectedHapticType] _ in
+                        userDefaultsService.set(selectedType.rawValue, forKey: .hapticType)
+                    }
+                    .cancellable(id: CancelID.saveSettings, cancelInFlight: true)
 
                 case .backButtonTapped:
-                    return state.isPreviewingHaptic ? .send(.stopHapticPreview) : .none
-
-                case let .internal(internalAction):
-                    switch internalAction {
-                        case .saveSettingsEffect:
-                            return .run { [selectedType = state.selectedHapticType] _ in
-                                userDefaultsService.set(selectedType.rawValue, forKey: .hapticType)
-                            }
-                            .cancellable(id: CancelID.saveSettings, cancelInFlight: true)
-                    }
+                    return .none
             }
         }
     }

@@ -62,10 +62,20 @@ struct CoordinatorReducer: Reducer {
                         type: hapticType
                     )))
 
-                case .settings(.selectHapticType):
-                    return .send(.haptics(.updateHapticSettings(
-                        type: state.settings.selectedHapticType
-                    )))
+                case let .settings(.selectHapticType(type)):
+                    // Haptics Domain にプレビュー開始を依頼
+                    let effects: [Effect<Action>] = [
+                        .send(.haptics(.startPreview(type)))
+                    ]
+                    return .merge(effects)
+
+                case .settings(.backButtonTapped):
+                    var effects: [Effect<Action>] = []
+                    if state.haptics.isPreviewingHaptic {
+                        effects.append(.send(.haptics(.stopPreview)))
+                    }
+                    effects.append(.send(.popScreen))
+                    return .merge(effects)
 
                 case .timer(.cancelTimer):
                     state.path.removeLast()

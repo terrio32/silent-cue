@@ -68,10 +68,9 @@ jobs:
 
             const { owner, repo } = context.repo;
             const commentMarker = '<!-- test-and-coverage-report -->';
-            let commentBody = `${commentMarker}\\n\\n## Test & Artifact Summary\\n\\n`; // タイトルを更新
+            let commentBody = `${commentMarker}\n\n## Test & Artifact Summary\n\n`; // タイトルを更新
             const fs = require('fs');
             const path = require('path');
-            const core = require('@actions/core');
 
             // --- Test Results Summary ---
             const unitTestDir = './ci-outputs/test-results/unit';
@@ -86,9 +85,9 @@ jobs:
             }
 
             if (junitFound) {
-               commentBody += `✅ **Test Results**: Available in the 'Checks' tab.\\n`;
+               commentBody += `✅ **Test Results**: Available in the 'Checks' tab.\n`;
             } else {
-               commentBody += `ℹ️ **Test Results**: No JUnit reports found or processed.\\n`;
+               commentBody += `ℹ️ **Test Results**: No JUnit reports found or processed.\n`;
             }
 
             // --- XCResults Download Link ---
@@ -102,13 +101,13 @@ jobs:
             const xcresultsUrl = '${{ steps.upload-xcresults-for-link.outputs.artifact-url }}'; // アップロードステップの出力からURLを取得
 
             if ((unitXcresultExists || uiXcresultExists) && xcresultsUploadSuccess && xcresultsUrl) {
-              commentBody += `📦 **XCResults Bundle**: [Download XCResults](${xcresultsUrl})\\n`;
+              commentBody += `📦 **XCResults Bundle**: [Download XCResults](${xcresultsUrl})\n`;
             } else if (unitXcresultExists || uiXcresultExists) {
               // ダウンロードは成功したが、アップロード失敗またはURL欠落
-              commentBody += `⚠️ **XCResults Bundle**: Found, but failed to create a direct download link. Check the workflow run artifacts.\\n`;
+              commentBody += `⚠️ **XCResults Bundle**: Found, but failed to create a direct download link. Check the workflow run artifacts.\n`;
               core.warning('XCResults found but upload step failed or URL is missing.');
             } else {
-              commentBody += `ℹ️ **XCResults Bundle**: Not found or artifact expired.\\n`;
+              commentBody += `ℹ️ **XCResults Bundle**: Not found or artifact expired.\n`;
             }
 
             // --- 既存コメントの検索・更新 or 新規作成 ---
