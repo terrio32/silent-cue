@@ -140,7 +140,7 @@ jobs:
 
       - name: Upload Unit Test Results
         uses: actions/upload-artifact@v4
-        if: always() # Upload artifacts even if tests fail
+        if: always()
         with:
           name: unit-test-results-${{ github.run_id }}
           path: ./ci-outputs/test-results/unit
@@ -211,7 +211,7 @@ jobs:
 
       - name: Upload UI Test Results
         uses: actions/upload-artifact@v4
-        if: always() # Upload artifacts even if tests fail
+        if: always()
         with:
           name: ui-test-results-${{ github.run_id }}
           path: ./ci-outputs/test-results/ui

@@ -7,7 +7,7 @@ enum TimeCalculation {
         selectedHour: Int,
         selectedMinute: Int,
         now: Date,
-        calendar: Calendar = .current // Default to current calendar
+        calendar: Calendar = .current
     ) -> Int {
         switch mode {
             case .minutes:

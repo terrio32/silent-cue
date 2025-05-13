@@ -1,7 +1,7 @@
 import CasePaths
 import ComposableArchitecture
-import SCProtocol // For services
-import SCShared // For UserDefaultsKeys
+import SCProtocol
+import SCShared
 import SwiftUI
 import UserNotifications
 
@@ -31,7 +31,6 @@ struct CoordinatorReducer: Reducer {
             switch action {
                 case .onAppear:
                     // アプリ起動時に通知許可をリクエスト
-                    // Result is intentionally ignored as it runs on appear.
                     Task { _ = await notificationService.requestAuthorization() }
                     return .run { send in
                         // 設定読み込みを SettingsReducer に依頼

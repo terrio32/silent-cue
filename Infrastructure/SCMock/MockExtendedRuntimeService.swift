@@ -20,7 +20,7 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
     public var lastStartSessionDuration: TimeInterval?
     public var lastStartSessionTargetEndTime: Date?
 
-    // 完了イベント用ストリーム (テストで制御可能)
+    // 完了イベント用ストリーム
     private let completionStreamContinuation: AsyncStream<Void>.Continuation
     public let completionEvents: AsyncStream<Void>
 
@@ -64,7 +64,7 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
         return mockSessionState.rawValue
     }
 
-    // テストヘルパー: バックグラウンド完了イベントを発行する
+    // テスト用バックグラウンド完了イベントを発行する
     public func triggerCompletion() {
         completionStreamContinuation.yield(())
         completionStreamContinuation.finish() // ストリームを終了させる
@@ -81,6 +81,5 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
         stopSessionCallCount = 0
         lastStartSessionDuration = nil
         lastStartSessionTargetEndTime = nil
-        // 注意: ストリーム自体のリセットは複雑なため、通常はモックを再初期化する
     }
 }

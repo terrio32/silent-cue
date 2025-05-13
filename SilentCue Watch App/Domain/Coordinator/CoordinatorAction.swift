@@ -1,7 +1,7 @@
 import CasePaths
 import ComposableArchitecture
 import SwiftUI
-import UserNotifications // For UNAuthorizationStatus
+import UserNotifications
 
 @CasePathable
 enum CoordinatorAction: Equatable {

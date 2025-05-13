@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SCShared
 import SwiftUI
 
-/// ナビゲーションの宛先を示す型
+// ナビゲーションの宛先を示す型
 enum NavigationDestination: Hashable {
     case countdown
     case completion
@@ -10,7 +10,7 @@ enum NavigationDestination: Hashable {
     case timerStart
 }
 
-/// アプリ全体のナビゲーションと状態を管理する
+// アプリ全体のナビゲーションと状態を管理する
 struct CoordinatorState: Equatable {
     // 各画面の状態
     var timer = TimerState()

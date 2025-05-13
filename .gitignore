@@ -31,11 +31,15 @@ build/
 # CI/CD output directory
 ci-outputs/
 
+# cursor
+.cursor/
+
+# xcodegen
+Info.plist
+*/Info.plist
 *.xcodeproj
 *.xcworkspace
 *.xcuserdata
 *.xcuserstate
 *.xcuserdatad/
 *.xcuserdata/
-
-.cursor/
