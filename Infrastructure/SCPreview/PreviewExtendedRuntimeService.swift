@@ -29,7 +29,7 @@
         }
 
         public func getSessionState() -> Int {
-            return sessionState.rawValue
+            sessionState.rawValue
         }
     }
 

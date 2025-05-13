@@ -17,7 +17,7 @@
         }
 
         public func getAuthorizationStatus() async -> UNAuthorizationStatus {
-            return authorizationStatus
+            authorizationStatus
         }
 
         public func addNotificationRequest(

@@ -23,7 +23,6 @@ public class MockNotificationService: NotificationServiceProtocol {
 
     public func requestAuthorization() async -> Bool {
         requestAuthorizationCallCount += 1
-        print("MockNotificationService: Requesting authorization (will return \(requestAuthorizationShouldSucceed))")
         if requestAuthorizationShouldSucceed {
             mockAuthorizationStatus = .authorized
         }
@@ -32,17 +31,18 @@ public class MockNotificationService: NotificationServiceProtocol {
 
     public func getAuthorizationStatus() async -> UNAuthorizationStatus {
         getAuthorizationStatusCallCount += 1
-        print("MockNotificationService: Getting authorization status: \(mockAuthorizationStatus)")
         return mockAuthorizationStatus
     }
 
-    public func addNotificationRequest(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger) async throws {
+    public func addNotificationRequest(
+        identifier: String,
+        content: UNNotificationContent,
+        trigger: UNNotificationTrigger
+    ) async throws {
         addRequestCallCount += 1
         if let error = addRequestShouldThrowError {
-            print("MockNotificationService: Adding request ID \(identifier) (will throw error)")
             throw error
         }
-        print("MockNotificationService: Adding request ID \(identifier)")
         addedRequests.append((identifier, content, trigger))
     }
 
@@ -50,14 +50,12 @@ public class MockNotificationService: NotificationServiceProtocol {
         removePendingRequestsCallCount += 1
         removedRequestIdentifiers.append(contentsOf: identifiers)
         addedRequests.removeAll { identifiers.contains($0.identifier) }
-        print("MockNotificationService: Removing pending requests: IDs \(identifiers)")
     }
 
     public func removeAllPendingNotificationRequests() {
         removeAllPendingRequestsCallCount += 1
         removedRequestIdentifiers.append(contentsOf: addedRequests.map(\.identifier))
         addedRequests.removeAll()
-        print("MockNotificationService: Removing all pending requests")
     }
 
     // テスト用のリセット関数

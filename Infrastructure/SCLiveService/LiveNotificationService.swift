@@ -73,7 +73,11 @@ public class LiveNotificationService: NotificationServiceProtocol {
         await notificationCenter.notificationSettings().authorizationStatus
     }
 
-    public func addNotificationRequest(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger) async throws {
+    public func addNotificationRequest(
+        identifier: String,
+        content: UNNotificationContent,
+        trigger: UNNotificationTrigger
+    ) async throws {
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         do {
             try await notificationCenter.add(request)

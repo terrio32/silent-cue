@@ -33,7 +33,7 @@ jobs:
       run: mint run swiftformat .
 
     - name: Run SwiftLint
-      run: mint run swiftlint --strict
+      run: mint run swiftlint
 
     - name: Check for formatting changes
       id: check

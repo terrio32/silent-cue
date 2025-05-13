@@ -15,7 +15,6 @@ public class MockHapticsService: HapticsServiceProtocol {
         playCallCount += 1
         playedHapticTypes.append(type)
         lastPlayedHapticType = type
-        print("MockHapticsService: Playing haptic type: \(type)")
     }
 
     // テスト用にリセットするための関数

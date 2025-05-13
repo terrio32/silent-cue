@@ -8,7 +8,7 @@
     public class PreviewHapticsService: HapticsServiceProtocol {
         public init() {}
 
-        public func play(_ type: WKHapticType) {}
+        public func play(_: WKHapticType) {}
     }
 
 #endif

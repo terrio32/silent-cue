@@ -24,10 +24,8 @@ public class MockUserDefaultsManager: UserDefaultsServiceProtocol {
         let key = defaultName.rawValue
         if let value {
             storage[key] = value
-            print("MockUserDefaultsManager: Set \(key) = \(value)")
         } else {
             storage.removeValue(forKey: key)
-            print("MockUserDefaultsManager: Removed value for \(key)")
         }
     }
 
@@ -35,7 +33,6 @@ public class MockUserDefaultsManager: UserDefaultsServiceProtocol {
         objectCallCount += 1
         let key = defaultName.rawValue
         let value = storage[key]
-        print("MockUserDefaultsManager: Got object for \(key): \(value ?? "nil")")
         return value
     }
 
@@ -43,7 +40,6 @@ public class MockUserDefaultsManager: UserDefaultsServiceProtocol {
         boolCallCount += 1
         let key = defaultName.rawValue
         let value = storage[key] as? Bool
-        print("MockUserDefaultsManager: Got bool for \(key): \(value.map { String(describing: $0) } ?? "nil")")
         return value
     }
 
@@ -51,13 +47,11 @@ public class MockUserDefaultsManager: UserDefaultsServiceProtocol {
         removeCallCount += 1
         let key = defaultName.rawValue
         storage.removeValue(forKey: key)
-        print("MockUserDefaultsManager: Removed key \(key)")
     }
 
     public func removeAll() {
         removeAllCallCount += 1
         storage.removeAll()
-        print("MockUserDefaultsManager: Removed all keys")
     }
 
     // --- プロトコルメソッド ---
@@ -66,7 +60,6 @@ public class MockUserDefaultsManager: UserDefaultsServiceProtocol {
         saveHapticTypeCallCount += 1
         let key = UserDefaultsKeys.hapticType.rawValue
         storage[key] = type.rawValue
-        print("MockUserDefaultsManager: Saved haptic type: \(type.rawValue)")
     }
 
     public func loadHapticType() -> HapticType {
@@ -74,7 +67,6 @@ public class MockUserDefaultsManager: UserDefaultsServiceProtocol {
         let key = UserDefaultsKeys.hapticType.rawValue
         let value = storage[key] as? String ?? HapticType.standard.rawValue
         let type = HapticType(rawValue: value) ?? .standard
-        print("MockUserDefaultsManager: Loaded haptic type: \(type.rawValue)")
         return type
     }
 
@@ -93,6 +85,5 @@ public class MockUserDefaultsManager: UserDefaultsServiceProtocol {
         boolCallCount = 0
         removeCallCount = 0
         removeAllCallCount = 0
-        print("MockUserDefaultsManager: Reset storage to defaults.")
     }
 }

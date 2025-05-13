@@ -100,7 +100,7 @@ struct SetTimerView: View {
         initialState: TimerReducer.State(),
         reducer: { TimerReducer() }
     )
-    
+
     NavigationView {
         SetTimerView(
             store: previewStore,

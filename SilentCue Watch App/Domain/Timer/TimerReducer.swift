@@ -181,7 +181,11 @@ struct TimerReducer: Reducer {
 
             await Task {
                 do {
-                    try await notificationService.addNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+                    try await notificationService.addNotificationRequest(
+                        identifier: identifier,
+                        content: content,
+                        trigger: trigger
+                    )
                 } catch {
                     print("Failed to schedule timer completion notification: \(error)")
                 }

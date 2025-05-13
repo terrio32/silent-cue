@@ -15,13 +15,13 @@
             ]
         }
 
-        public func set(_ value: Any?, forKey defaultName: UserDefaultsKeys) {}
+        public func set(_: Any?, forKey _: UserDefaultsKeys) {}
 
         public func object(forKey defaultName: UserDefaultsKeys) -> Any? {
-            return storage[defaultName.rawValue]
+            storage[defaultName.rawValue]
         }
 
-        public func remove(forKey defaultName: UserDefaultsKeys) {}
+        public func remove(forKey _: UserDefaultsKeys) {}
 
         public func removeAll() {
             storage.removeAll()
@@ -32,7 +32,7 @@
         }
 
         public func loadHapticType() -> HapticType {
-            return (storage[UserDefaultsKeys.hapticType.rawValue] as? String)
+            (storage[UserDefaultsKeys.hapticType.rawValue] as? String)
                 .flatMap { HapticType(rawValue: $0) } ?? .standard
         }
     }
