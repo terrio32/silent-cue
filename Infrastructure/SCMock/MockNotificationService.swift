@@ -36,7 +36,7 @@ public class MockNotificationService: NotificationServiceProtocol {
         return mockAuthorizationStatus
     }
 
-    public func add(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger) async throws {
+    public func addNotificationRequest(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger) async throws {
         addRequestCallCount += 1
         if let error = addRequestShouldThrowError {
             print("MockNotificationService: Adding request ID \(identifier) (will throw error)")
@@ -60,7 +60,7 @@ public class MockNotificationService: NotificationServiceProtocol {
         print("MockNotificationService: Removing all pending requests")
     }
 
-    // テスト用リセット関数
+    // テスト用のリセット関数
     public func reset() {
         mockAuthorizationStatus = .notDetermined
         requestAuthorizationShouldSucceed = true

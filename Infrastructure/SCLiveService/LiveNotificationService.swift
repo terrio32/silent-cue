@@ -6,17 +6,17 @@ import UserNotifications
 import WatchKit
 
 public class LiveNotificationService: NotificationServiceProtocol {
-    /// 通知カテゴリの識別子
+    // 通知カテゴリの識別子
     private enum NotificationCategory: String {
         case timerCompleted = "TIMER_COMPLETED_CATEGORY"
     }
 
-    /// 通知アクションの識別子
+    // 通知アクションの識別子
     private enum NotificationAction: String {
         case open = "OPEN_ACTION"
     }
 
-    /// 通知識別子
+    // 通知識別子
     private enum NotificationIdentifier: String {
         case timerCompleted = "TIMER_COMPLETED_NOTIFICATION"
     }
@@ -73,7 +73,7 @@ public class LiveNotificationService: NotificationServiceProtocol {
         await notificationCenter.notificationSettings().authorizationStatus
     }
 
-    public func add(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger) async throws {
+    public func addNotificationRequest(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger) async throws {
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         do {
             try await notificationCenter.add(request)
@@ -160,12 +160,7 @@ public class LiveNotificationService: NotificationServiceProtocol {
     ) -> UNTimeIntervalNotificationTrigger {
         UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: repeats)
     }
-}
 
-// MARK: - UNUserNotificationCenter 拡張機能
-
-// 頻繁に使用されるカスタムロジックが必要な場合に拡張機能を使用します。
-extension UNUserNotificationCenter {
     // 便利なメソッド
     func addNotification(
         identifier: String,
@@ -180,6 +175,6 @@ extension UNUserNotificationCenter {
         content.sound = sound
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-        try await add(request)
+        try await notificationCenter.add(request)
     }
 }

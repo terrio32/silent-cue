@@ -34,7 +34,6 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
 
     public func startSession() async -> Bool {
         startSessionCallCount += 1
-        print("MockExtendedRuntimeService: Starting session (will return \(startSessionShouldSucceed))")
         if startSessionShouldSucceed {
             mockSessionState = .running
         }
@@ -43,14 +42,12 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
 
     public func startSession(duration: TimeInterval, targetEndTime: Date?) {
         startSessionCallCount += 1
-        print("MockExtendedRuntimeService: Legacy startSession(duration:targetEndTime:) called.")
         lastStartSessionDuration = duration
         lastStartSessionTargetEndTime = targetEndTime
     }
 
     public func invalidateSession() {
         invalidateSessionCallCount += 1
-        print("MockExtendedRuntimeService: Invalidating session.")
         mockSessionState = .invalid
         if shouldYieldCompletionEvent {
             completionStreamContinuation.yield(())
@@ -64,13 +61,11 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
 
     public func getSessionState() -> Int {
         getSessionStateCallCount += 1
-        print("MockExtendedRuntimeService: Getting session state: \(mockSessionState).")
         return mockSessionState.rawValue
     }
 
     // テストヘルパー: バックグラウンド完了イベントを発行する
     public func triggerCompletion() {
-        print("MockExtendedRuntimeService: Triggering completion event.")
         completionStreamContinuation.yield(())
         completionStreamContinuation.finish() // ストリームを終了させる
     }

@@ -4,7 +4,7 @@ import SCProtocol
 import WatchKit
 
 public class MockHapticsService: HapticsServiceProtocol {
-    // 検証のために再生されたハプティクスタイプを追跡
+    // 再生されたハプティクスタイプを追跡
     public var playedHapticTypes: [WKHapticType] = []
     public var playCallCount = 0
     public var lastPlayedHapticType: WKHapticType?

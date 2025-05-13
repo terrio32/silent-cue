@@ -20,7 +20,7 @@
             return authorizationStatus
         }
 
-        public func add(
+        public func addNotificationRequest(
             identifier: String,
             content _: UNNotificationContent,
             trigger _: UNNotificationTrigger
