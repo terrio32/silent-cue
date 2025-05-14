@@ -6,17 +6,17 @@ import UserNotifications
 import WatchKit
 
 public class LiveNotificationService: NotificationServiceProtocol {
-    /// 通知カテゴリの識別子
+    // 通知カテゴリの識別子
     private enum NotificationCategory: String {
         case timerCompleted = "TIMER_COMPLETED_CATEGORY"
     }
 
-    /// 通知アクションの識別子
+    // 通知アクションの識別子
     private enum NotificationAction: String {
         case open = "OPEN_ACTION"
     }
 
-    /// 通知識別子
+    // 通知識別子
     private enum NotificationIdentifier: String {
         case timerCompleted = "TIMER_COMPLETED_NOTIFICATION"
     }
@@ -73,7 +73,11 @@ public class LiveNotificationService: NotificationServiceProtocol {
         await notificationCenter.notificationSettings().authorizationStatus
     }
 
-    public func add(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger) async throws {
+    public func addNotificationRequest(
+        identifier: String,
+        content: UNNotificationContent,
+        trigger: UNNotificationTrigger
+    ) async throws {
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         do {
             try await notificationCenter.add(request)
@@ -140,11 +144,7 @@ public class LiveNotificationService: NotificationServiceProtocol {
         }
     }
 
-    // MARK: - Helper Methods (Private or Internal)
-
-    // These might be useful for creating content or triggers if needed internally
-
-    // Example: Creates standard notification content
+    // 標準の通知コンテンツを作成
     private func createNotificationContent(
         title: String,
         body: String,
@@ -157,20 +157,15 @@ public class LiveNotificationService: NotificationServiceProtocol {
         return content
     }
 
-    // Example: Creates a time interval trigger
+    // 時間間隔トリガーを作成
     private func createTimeIntervalTrigger(
         timeInterval: TimeInterval,
         repeats: Bool = false
     ) -> UNTimeIntervalNotificationTrigger {
         UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: repeats)
     }
-}
 
-// MARK: - UNUserNotificationCenter Extension (Optional)
-
-// If frequently used custom logic is needed, an extension can be helpful.
-extension UNUserNotificationCenter {
-    // Convenience method example (consider if it truly simplifies things)
+    // 便利なメソッド
     func addNotification(
         identifier: String,
         title: String,
@@ -184,6 +179,6 @@ extension UNUserNotificationCenter {
         content.sound = sound
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-        try await add(request)
+        try await notificationCenter.add(request)
     }
 }

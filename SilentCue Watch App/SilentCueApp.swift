@@ -9,18 +9,12 @@ import UserNotifications
 
 @main
 struct SilentCueWatchApp: App {
-    // アプリ全体のストア
     let store: StoreOf<CoordinatorReducer>
-
-    // バックグラウンド/フォアグラウンド遷移を監視
     @Environment(\.scenePhase) private var scenePhase
-
-    // 通知デリゲート (StateObjectではなく通常のプロパティにする)
     let notificationDelegate: NotificationDelegate
 
     init() {
         #if DEBUG
-            // --- UIテストの場合のみ、依存関係をオーバーライドしてストアを初期化 ---
             if CommandLine.arguments.contains(SCAppEnvironment.LaunchArguments.uiTesting.rawValue) {
                 print("--- UI Testing: Initializing Store with overridden dependencies (DEBUG build) ---")
                 store = Store(initialState: CoordinatorState()) {
@@ -32,27 +26,22 @@ struct SilentCueWatchApp: App {
                     dependencies.hapticsService = PreviewHapticsService()
                 }
             } else {
-                // --- 通常のビルドまたはUIテストでない場合、デフォルトの依存関係でストアを初期化 ---
                 store = Store(initialState: CoordinatorState()) {
                     CoordinatorReducer()
                 }
             }
         #else
-            // --- リリースビルドの場合、デフォルトの依存関係でストアを初期化 ---
             store = Store(initialState: CoordinatorState()) {
                 CoordinatorReducer()
             }
         #endif
 
-        // NotificationDelegateを初期化し、ストアを渡す
         notificationDelegate = NotificationDelegate(store: store)
-        // NotificationCenterのデリゲートを設定
         UNUserNotificationCenter.current().delegate = notificationDelegate
     }
 
     var body: some Scene {
         WindowGroup {
-            // WithViewStore を使用して状態を監視し、アクションを送信する
             WithViewStore(store, observe: { $0 }, content: { viewStore in
                 NavigationStack(path: viewStore.binding(
                     get: \.path,
@@ -115,53 +104,30 @@ struct SilentCueWatchApp: App {
     }
 }
 
-/// 通知デリゲートクラス
+// 通知処理
 class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
-    // アプリのストア (letに変更し、初期化時に受け取る)
     private let store: Store<CoordinatorState, CoordinatorAction>
 
-    // イニシャライザでストアを受け取る
     init(store: Store<CoordinatorState, CoordinatorAction>) {
         self.store = store
         super.init()
-        // UNUserNotificationCenter.current().delegate = self // デリゲート設定はAppのinitで行う
     }
 
-    // ストアを設定するメソッドは不要になった
-    // func setStore(_ store: Store<CoordinatorState, CoordinatorAction>) {
-    //     self.store = store
-    // }
-
-    // フォアグラウンドでも通知を表示
-    func userNotificationCenter(
-        _: UNUserNotificationCenter,
-        willPresent _: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-    ) {
-        completionHandler([.banner, .sound])
-    }
-
-    // 通知アクションの処理
     func userNotificationCenter(
         _: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        // 通知のカテゴリに基づいて処理
         let categoryIdentifier = response.notification.request.content.categoryIdentifier
 
         if categoryIdentifier == "TIMER_COMPLETED_CATEGORY" {
-            // タイマー完了画面へ遷移
             handleTimerCompletionNotification()
         }
 
         completionHandler()
     }
 
-    // タイマー完了通知の処理
     private func handleTimerCompletionNotification() {
         print("Timer completion notification received.")
-        // 必要に応じてストアにアクションを送信する
-        // ViewStore(self.store, observe: { $0 }).send(.someAction)
     }
 }

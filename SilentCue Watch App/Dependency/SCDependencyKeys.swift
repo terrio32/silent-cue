@@ -10,8 +10,6 @@ import SCLiveService
     import SCPreview
 #endif
 
-// MARK: - Dependency Keys
-
 // #if DEBUG ブロック内では、各サービスのプレビュー用実装を使用します。
 
 enum UserDefaultsServiceKey: DependencyKey {

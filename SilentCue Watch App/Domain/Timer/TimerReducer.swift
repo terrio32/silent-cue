@@ -149,7 +149,6 @@ struct TimerReducer: Reducer {
         state.targetEndDate = unwrappedTargetEndDate
 
         let totalSeconds = state.totalSeconds
-        let timerDurationMinutes = state.timerDurationMinutes
 
         let tickerEffect = Effect<Action>.run { send in
             for await _ in clock.timer(interval: .seconds(1)) {
@@ -181,7 +180,11 @@ struct TimerReducer: Reducer {
 
             await Task {
                 do {
-                    try await notificationService.add(identifier: identifier, content: content, trigger: trigger)
+                    try await notificationService.addNotificationRequest(
+                        identifier: identifier,
+                        content: content,
+                        trigger: trigger
+                    )
                 } catch {
                     print("Failed to schedule timer completion notification: \(error)")
                 }

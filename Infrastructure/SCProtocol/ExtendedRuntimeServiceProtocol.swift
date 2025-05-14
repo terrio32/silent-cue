@@ -10,5 +10,5 @@ public protocol ExtendedRuntimeServiceProtocol {
 
     func startSession() async -> Bool
     func invalidateSession()
-    func getSessionState() -> Int // WKExtendedRuntimeSessionState is Int
+    func getSessionState() -> Int
 }

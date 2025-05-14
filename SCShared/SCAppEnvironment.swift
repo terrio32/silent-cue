@@ -1,6 +1,6 @@
 import Foundation
 
-/// アプリケーションの実行環境を管理する構造体
+/// アプリケーションの実行環境を管理する
 public enum SCAppEnvironment {
     /// UIテストまたは特定のデバッグシナリオで使用される起動引数
     public enum LaunchArguments: String {

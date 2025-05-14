@@ -3,23 +3,26 @@ import SCMock
 @testable import SilentCue_Watch_App
 import XCTest
 
-@MainActor
 final class TimerBackgroundHandlingTests: XCTestCase {
     var store: TestStore<TimerState, TimerAction>!
+
     var mockUserDefaults: MockUserDefaultsManager!
     var mockHaptics: MockHapticsService!
+    var mockNotificationService: MockNotificationService!
+    var mockExtendedRuntimeService: MockExtendedRuntimeService!
+
     var clock: TestClock<Duration>!
-    var notificationService: MockNotificationService!
-    var extendedRuntimeService: MockExtendedRuntimeService!
     var calendar: Calendar!
 
     override func setUp() {
         super.setUp()
+
         mockUserDefaults = MockUserDefaultsManager()
         mockHaptics = MockHapticsService()
+        mockNotificationService = MockNotificationService()
+        mockExtendedRuntimeService = MockExtendedRuntimeService()
+
         clock = TestClock<Duration>()
-        notificationService = MockNotificationService()
-        extendedRuntimeService = MockExtendedRuntimeService()
         calendar = TimerReducerTestUtil.utcCalendar
 
         store = TestStore(
@@ -29,34 +32,47 @@ final class TimerBackgroundHandlingTests: XCTestCase {
                 dependencies.userDefaultsService = self.mockUserDefaults
                 dependencies.hapticsService = self.mockHaptics
                 dependencies.continuousClock = self.clock
-                dependencies.notificationService = self.notificationService
-                dependencies.extendedRuntimeService = self.extendedRuntimeService
+                dependencies.notificationService = self.mockNotificationService
+                dependencies.extendedRuntimeService = self.mockExtendedRuntimeService
             }
         )
     }
 
     override func tearDown() {
-        store = nil
         mockUserDefaults = nil
         mockHaptics = nil
+        mockNotificationService = nil
+        mockExtendedRuntimeService = nil
+
         clock = nil
-        notificationService = nil
-        extendedRuntimeService = nil
         calendar = nil
+
+        store = nil
+
         super.tearDown()
     }
 
-    // バックグラウンドでのタイマー完了シーケンス (.minutes モード)
+    // // タイマーがバックグラウンドで完了する際の動作確認（分指定モード）
     func testTimerFinishes_Background() async {
         let fixedNow = Date(timeIntervalSince1970: 0)
-        let selectedMinutes = 1 // 60 秒
-        let fixedCalendar = calendar! // Use instance variable
+        let userSelectedDurationMinutes = 1 // 60 秒
+        let fixedCalendar = calendar!
 
         let initialState = TimerReducerTestUtil.createInitialState(
             now: fixedNow,
-            selectedMinutes: selectedMinutes,
+            selectedMinutes: userSelectedDurationMinutes,
             calendar: fixedCalendar
         )
+
+        let store = await TestStore(initialState: initialState) {
+            TimerReducer()
+        } withDependencies: {
+            $0.date = DateGenerator.constant(fixedNow)
+            $0.continuousClock = self.clock
+            $0.notificationService = self.mockNotificationService
+            $0.extendedRuntimeService = self.mockExtendedRuntimeService
+            $0.calendar = fixedCalendar
+        }
 
         let expectedInitialSeconds = TimeCalculation.calculateTotalSeconds(
             mode: initialState.timerMode,
@@ -69,16 +85,6 @@ final class TimerBackgroundHandlingTests: XCTestCase {
 
         let finishDate = fixedNow.addingTimeInterval(TimeInterval(expectedInitialSeconds))
 
-        let store = TestStore(initialState: initialState) {
-            TimerReducer()
-        } withDependencies: {
-            $0.date = DateGenerator.constant(fixedNow)
-            $0.continuousClock = self.clock // Use instance variable
-            $0.notificationService = self.notificationService // Use instance variable
-            $0.extendedRuntimeService = self.extendedRuntimeService // Use instance variable
-            $0.calendar = fixedCalendar
-        }
-
         // 1. タイマーを開始
         await store.send(TimerReducer.Action.startTimer) {
             $0.isRunning = true
@@ -89,11 +95,13 @@ final class TimerBackgroundHandlingTests: XCTestCase {
             $0.currentRemainingSeconds = expectedInitialSeconds
         }
 
-        // 2. 時間経過をシミュレート (バックグラウンド想定のためティック受信なし)
-        store.dependencies.date = DateGenerator.constant(finishDate)
+        // 2. テスト内の時間をタイマー完了時刻まで進める
+        await MainActor.run {
+            store.dependencies.date = DateGenerator.constant(finishDate)
+        }
 
         // 3. バックグラウンド完了イベントをシミュレート
-        extendedRuntimeService.triggerCompletion()
+        mockExtendedRuntimeService.triggerCompletion()
         await store.receive(TimerReducer.Action.internal(.backgroundTimerDidComplete))
         await store.receive(TimerReducer.Action.internal(.finalizeTimerCompletion(completionDate: finishDate))) {
             $0.isRunning = false
@@ -148,13 +156,13 @@ final class TimerBackgroundHandlingTests: XCTestCase {
             return
         }
 
-        let store = TestStore(initialState: initialState) {
+        let store = await TestStore(initialState: initialState) {
             TimerReducer()
         } withDependencies: {
             $0.date = DateGenerator.constant(fixedStartDate)
             $0.continuousClock = self.clock // Use instance variable
-            $0.notificationService = self.notificationService // Use instance variable
-            $0.extendedRuntimeService = self.extendedRuntimeService // Use instance variable
+            $0.notificationService = self.mockNotificationService // Use instance variable
+            $0.extendedRuntimeService = self.mockExtendedRuntimeService // Use instance variable
             $0.calendar = fixedCalendar
         }
 
@@ -191,10 +199,12 @@ final class TimerBackgroundHandlingTests: XCTestCase {
         }
 
         // 2. 時間経過とバックグラウンド完了をシミュレート
-        store.dependencies.date = DateGenerator.constant(finishDate)
+        await MainActor.run {
+            store.dependencies.date = DateGenerator.constant(finishDate)
+        }
 
         // 3. バックグラウンド完了イベントをトリガー
-        extendedRuntimeService.triggerCompletion()
+        mockExtendedRuntimeService.triggerCompletion()
         await store.receive(.internal(.backgroundTimerDidComplete))
         await store.receive(.internal(.finalizeTimerCompletion(completionDate: finishDate))) {
             $0.isRunning = false

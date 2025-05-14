@@ -5,58 +5,17 @@ import SCMock
 import WatchKit
 import XCTest
 
-@MainActor
 final class ExtendedRuntimeServiceTests: XCTestCase {
     var service: MockExtendedRuntimeService!
-    var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
-        service = MockExtendedRuntimeService() // 各テスト前にモックを初期化
+        service = MockExtendedRuntimeService()
     }
 
     override func tearDown() {
-        service = nil // サービス解放
-        cancellables.removeAll()
+        service = nil
         super.tearDown()
-    }
-
-    // ストリームの完了を待つヘルパー
-    private func awaitStreamCompletion(_ stream: AsyncStream<Void>, timeout: TimeInterval = 1.0) async {
-        let expectation = XCTestExpectation(description: "ストリーム完了を待機")
-        var task: Task<Void, Never>?
-        task = Task {
-            for await _ in stream {}
-            // ストリーム完了
-            expectation.fulfill()
-            task?.cancel()
-        }
-
-        // fulfillment(of:timeout:) がタイムアウト失敗を処理
-        await fulfillment(of: [expectation], timeout: timeout)
-        task?.cancel() // タスクキャンセルを保証
-    }
-
-    // ストリームの値発行と完了を待つヘルパー
-    private func awaitStreamYieldAndCompletion(_ stream: AsyncStream<Void>, timeout: TimeInterval = 1.0) async {
-        let yieldExpectation = XCTestExpectation(description: "ストリームの値発行を待機")
-        let completionExpectation = XCTestExpectation(description: "ストリーム完了を待機")
-        var task: Task<Void, Never>?
-        task = Task {
-            var yielded = false
-            for await _ in stream where !yielded {
-                yieldExpectation.fulfill()
-                yielded = true
-            }
-            // ストリーム完了
-            if !yielded { yieldExpectation.fulfill() } // 発行せずに完了した場合も yield を fulfill
-            completionExpectation.fulfill()
-            task?.cancel()
-        }
-
-        // fulfillment(of:timeout:) がタイムアウト失敗を処理
-        await fulfillment(of: [yieldExpectation, completionExpectation], timeout: timeout)
-        task?.cancel() // タスクキャンセルを保証
     }
 
     // セッション開始時のパラメータ記録を検証

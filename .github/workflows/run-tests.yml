@@ -139,12 +139,12 @@ jobs:
           echo "✅ Unit test result bundle found at $RESULT_BUNDLE_PATH"
 
       - name: Upload Unit Test Results
-        if: always()
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: unit-test-results-${{ github.run_id }}
-          path: ci-outputs/test-results/unit
-          retention-days: 7
+          path: ./ci-outputs/test-results/unit
+          retention-days: 1
 
   ui-test:
     needs: build-for-testing
@@ -210,12 +210,12 @@ jobs:
           echo "✅ UI test result bundle found at $RESULT_BUNDLE_PATH"
 
       - name: Upload UI Test Results
-        if: always()
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: ui-test-results-${{ github.run_id }}
-          path: ci-outputs/test-results/ui
-          retention-days: 7
+          path: ./ci-outputs/test-results/ui
+          retention-days: 1
 
   report-status:
     needs: [unit-test, ui-test]
@@ -236,3 +236,33 @@ jobs:
             echo "One or both test jobs failed or were skipped."
             echo "result=failure" >> $GITHUB_OUTPUT
           fi 
+
+  combine-results:
+    needs: [unit-test, ui-test]
+    runs-on: ubuntu-latest
+    if: always() # Ensure this runs even if tests fail to potentially report failures
+    steps:
+      - name: Create Combined Directory Structure
+        run: mkdir -p ./combined-results/unit ./combined-results/ui
+
+      - name: Download Unit Test Results
+        uses: actions/download-artifact@v4
+        with:
+          name: unit-test-results-${{ github.run_id }}
+          path: ./combined-results/unit
+        continue-on-error: true 
+
+      - name: Download UI Test Results
+        uses: actions/download-artifact@v4
+        with:
+          name: ui-test-results-${{ github.run_id }}
+          path: ./combined-results/ui
+        continue-on-error: true 
+
+      - name: Upload Combined Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results 
+          path: ./combined-results/
+          if-no-files-found: ignore
+          retention-days: 7 

@@ -16,11 +16,11 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
     public var getSessionStateCallCount = 0
     public var stopSessionCallCount = 0
 
-    // Parameters passed to startSession(duration:targetEndTime:)
+    // startSession(duration:targetEndTime:) に渡されるパラメータ
     public var lastStartSessionDuration: TimeInterval?
     public var lastStartSessionTargetEndTime: Date?
 
-    // 完了イベント用ストリーム (テストで制御可能)
+    // 完了イベント用ストリーム
     private let completionStreamContinuation: AsyncStream<Void>.Continuation
     public let completionEvents: AsyncStream<Void>
 
@@ -34,7 +34,6 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
 
     public func startSession() async -> Bool {
         startSessionCallCount += 1
-        print("MockExtendedRuntimeService: Starting session (will return \(startSessionShouldSucceed))")
         if startSessionShouldSucceed {
             mockSessionState = .running
         }
@@ -43,14 +42,12 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
 
     public func startSession(duration: TimeInterval, targetEndTime: Date?) {
         startSessionCallCount += 1
-        print("MockExtendedRuntimeService: Legacy startSession(duration:targetEndTime:) called.")
         lastStartSessionDuration = duration
         lastStartSessionTargetEndTime = targetEndTime
     }
 
     public func invalidateSession() {
         invalidateSessionCallCount += 1
-        print("MockExtendedRuntimeService: Invalidating session.")
         mockSessionState = .invalid
         if shouldYieldCompletionEvent {
             completionStreamContinuation.yield(())
@@ -64,13 +61,11 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
 
     public func getSessionState() -> Int {
         getSessionStateCallCount += 1
-        print("MockExtendedRuntimeService: Getting session state: \(mockSessionState).")
         return mockSessionState.rawValue
     }
 
-    // テストヘルパー: バックグラウンド完了イベントを発行する
+    // テスト用バックグラウンド完了イベントを発行する
     public func triggerCompletion() {
-        print("MockExtendedRuntimeService: Triggering completion event.")
         completionStreamContinuation.yield(())
         completionStreamContinuation.finish() // ストリームを終了させる
     }
@@ -86,6 +81,5 @@ public class MockExtendedRuntimeService: ExtendedRuntimeServiceProtocol {
         stopSessionCallCount = 0
         lastStartSessionDuration = nil
         lastStartSessionTargetEndTime = nil
-        // 注意: ストリーム自体のリセットは複雑なため、通常はモックを再初期化する
     }
 }

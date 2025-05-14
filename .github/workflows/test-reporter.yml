@@ -9,21 +9,21 @@ on:
         type: number
 
 permissions:
-  checks: write          # JUnitレポートをChecksとして表示するために必要
-  actions: read          # アーティファクトをダウンロードするために必要
-  pull-requests: write   # PRにコメントするために必要
+  checks: write          
+  actions: read          
+  pull-requests: write   
 
 jobs:
   report:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code # jq や actions/github-script のためにリポジトリをチェックアウト
+      - name: Checkout code 
         uses: actions/checkout@v4
 
       - name: Download JUnit test results artifact
         id: download-test-results
         uses: actions/download-artifact@v4
-        continue-on-error: true # アーティファクトがなくてもステップを継続
+        continue-on-error: true 
         with:
           name: test-results # run-tests.yml でアップロードされたテスト結果のアーティファクト名
           path: ./ci-outputs/test-results
@@ -35,9 +35,9 @@ jobs:
         with:
           report_paths: './ci-outputs/test-results/unit/junit.xml,./ci-outputs/test-results/ui/junit.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          fail_on_failure: false # レポートステップ自体は失敗させない
-          require_tests: false # テストがなくてもエラーにしない
-          check_name: 'Test Suite Results' # Checksタブに表示される名前
+          fail_on_failure: false 
+          require_tests: false 
+          check_name: 'Test Suite Results' 
 
       # XCResultsを含むアーティファクトをリンク生成用にアップロード
       - name: Upload XCResults Bundle for Link
@@ -50,12 +50,10 @@ jobs:
           path: |
             ./ci-outputs/test-results/unit/TestResults.xcresult
             ./ci-outputs/test-results/ui/TestResults.xcresult
-          # 指定されたファイルが見つからない場合、アップロードをスキップする
           if-no-files-found: ignore
-          retention-days: 7 # オプション: 保存期間
+          retention-days: 7 
 
       - name: Create or Update PR Comment
-        # JUnitレポートまたはtest-resultsアーティファクトが見つかった場合に実行 (downloadステップの成功を確認)
         if: steps.download-test-results.outcome == 'success'
         uses: actions/github-script@v7
         id: pr-commenter
@@ -70,10 +68,9 @@ jobs:
 
             const { owner, repo } = context.repo;
             const commentMarker = '<!-- test-and-coverage-report -->';
-            let commentBody = `${commentMarker}\\n\\n## Test & Artifact Summary\\n\\n`; // タイトルを更新
+            let commentBody = `${commentMarker}\n\n## Test & Artifact Summary\n\n`; // タイトルを更新
             const fs = require('fs');
             const path = require('path');
-            const core = require('@actions/core');
 
             // --- Test Results Summary ---
             const unitTestDir = './ci-outputs/test-results/unit';
@@ -88,9 +85,9 @@ jobs:
             }
 
             if (junitFound) {
-               commentBody += `✅ **Test Results**: Available in the 'Checks' tab.\\n`;
+               commentBody += `✅ **Test Results**: Available in the 'Checks' tab.\n`;
             } else {
-               commentBody += `ℹ️ **Test Results**: No JUnit reports found or processed.\\n`;
+               commentBody += `ℹ️ **Test Results**: No JUnit reports found or processed.\n`;
             }
 
             // --- XCResults Download Link ---
@@ -104,13 +101,13 @@ jobs:
             const xcresultsUrl = '${{ steps.upload-xcresults-for-link.outputs.artifact-url }}'; // アップロードステップの出力からURLを取得
 
             if ((unitXcresultExists || uiXcresultExists) && xcresultsUploadSuccess && xcresultsUrl) {
-              commentBody += `📦 **XCResults Bundle**: [Download XCResults](${xcresultsUrl})\\n`;
+              commentBody += `📦 **XCResults Bundle**: [Download XCResults](${xcresultsUrl})\n`;
             } else if (unitXcresultExists || uiXcresultExists) {
               // ダウンロードは成功したが、アップロード失敗またはURL欠落
-              commentBody += `⚠️ **XCResults Bundle**: Found, but failed to create a direct download link. Check the workflow run artifacts.\\n`;
+              commentBody += `⚠️ **XCResults Bundle**: Found, but failed to create a direct download link. Check the workflow run artifacts.\n`;
               core.warning('XCResults found but upload step failed or URL is missing.');
             } else {
-              commentBody += `ℹ️ **XCResults Bundle**: Not found or artifact expired.\\n`;
+              commentBody += `ℹ️ **XCResults Bundle**: Not found or artifact expired.\n`;
             }
 
             // --- 既存コメントの検索・更新 or 新規作成 ---

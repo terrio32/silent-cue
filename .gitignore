@@ -3,9 +3,6 @@ xcuserdata/
 
 ## ビルド関連
 DerivedData/
-*.moved-aside
-*.pbxuser
-!default.pbxuser
 build/
 
 ## Objective-C/Swift固有のファイル
@@ -30,11 +27,16 @@ build/
 *.p12
 *.cer
 *.mobileprovision
-/.cursor/
 
 # CI/CD output directory
 ci-outputs/
 
+# cursor
+.cursor/
+
+# xcodegen
+Info.plist
+*/Info.plist
 *.xcodeproj
 *.xcworkspace
 *.xcuserdata
