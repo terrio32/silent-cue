@@ -66,13 +66,6 @@ targets:
         product: SwiftNavigation
       - package: Clocks
         product: Clocks
-      - target: SCProtocol
-      - target: SCShared
-      - target: SCLiveService
-      - target: SCPreview
-        condition: { config: Debug }
-      - target: SCMock
-        condition: { config: Debug }
     settings:
       base:
         DEVELOPMENT_LANGUAGE: en
@@ -106,130 +99,6 @@ targets:
         WKApplication: true
         WKRunsIndependentlyOfCompanionApp: true
 
-  SCProtocol:
-    type: library.static
-    platform: watchOS
-    sources:
-      - path: Infrastructure/SCProtocol
-    dependencies:
-      - target: SCShared
-      - package: ComposableArchitecture
-        product: ComposableArchitecture
-      - package: Dependencies
-        product: Dependencies
-      - package: CasePaths
-        product: CasePaths
-      - package: SwiftNavigation
-        product: SwiftNavigation
-      - package: Clocks
-        product: Clocks
-    settings:
-      base:
-        DEVELOPMENT_LANGUAGE: en
-        GENERATE_INFOPLIST_FILE: NO
-      configs:
-        Debug: {}
-        Release: {}
-
-  SCShared:
-    type: library.static
-    platform: watchOS
-    sources:
-      - path: SCShared
-    dependencies:
-      - package: ComposableArchitecture
-        product: ComposableArchitecture
-      - package: Dependencies
-        product: Dependencies
-      - package: CasePaths
-        product: CasePaths
-      - package: SwiftNavigation
-        product: SwiftNavigation
-      - package: Clocks
-        product: Clocks
-    settings:
-      base:
-        DEVELOPMENT_LANGUAGE: en
-        GENERATE_INFOPLIST_FILE: NO
-      configs:
-        Debug: {}
-        Release: {}
-
-  SCLiveService:
-    type: library.static
-    platform: watchOS
-    sources:
-      - path: Infrastructure/SCLiveService
-    dependencies:
-      - target: SCProtocol
-      - target: SCShared
-      - package: ComposableArchitecture
-        product: ComposableArchitecture
-      - package: Dependencies
-        product: Dependencies
-      - package: SwiftNavigation
-        product: SwiftNavigation
-      - package: Clocks
-        product: Clocks
-    settings:
-      base:
-        DEVELOPMENT_LANGUAGE: en
-        GENERATE_INFOPLIST_FILE: NO
-      configs:
-        Debug: {}
-        Release: {}
-
-  SCPreview:
-    type: library.static
-    platform: watchOS
-    sources:
-      - path: Infrastructure/SCPreview
-        excludes: ["**/Preview Assets.xcassets"]
-    dependencies:
-      - target: SCProtocol
-      - package: ComposableArchitecture
-        product: ComposableArchitecture
-      - package: Dependencies
-        product: Dependencies
-      - package: SwiftNavigation
-        product: SwiftNavigation
-      - package: Clocks
-        product: Clocks
-    settings:
-      base:
-        DEVELOPMENT_LANGUAGE: en
-        GENERATE_INFOPLIST_FILE: NO
-      configs:
-        Debug:
-          sources: # Only include assets for Debug
-            - path: Infrastructure/SCPreview/Preview Assets.xcassets
-        Release:
-          sources: [] # Keep Release sources empty
-
-  SCMock:
-    type: library.static
-    platform: watchOS
-    sources:
-      - path: Infrastructure/SCMock
-    dependencies:
-      - target: SCProtocol
-      - target: SCShared
-      - package: ComposableArchitecture
-        product: ComposableArchitecture
-      - package: Dependencies
-        product: Dependencies
-      - package: SwiftNavigation
-        product: SwiftNavigation
-      - package: Clocks
-        product: Clocks
-    settings:
-      base:
-        DEVELOPMENT_LANGUAGE: en
-        GENERATE_INFOPLIST_FILE: NO
-      configs:
-        Debug: {}
-        Release: {}
-
   "SilentCue Watch AppTests":
     type: bundle.unit-test
     platform: watchOS
@@ -237,11 +106,6 @@ targets:
       - path: SilentCue Watch AppTests
     dependencies:
       - target: "SilentCue Watch App"
-      - target: SCMock
-      - target: SCShared
-      - target: SCProtocol
-      - target: SCLiveService
-      - target: SCPreview
       - package: ComposableArchitecture
         product: ComposableArchitecture
       - package: Dependencies
@@ -269,7 +133,6 @@ targets:
       - path: SilentCue Watch AppUITests
     dependencies:
       - target: "SilentCue Watch App"
-      - target: SCShared
     settings:
       base:
         DEVELOPMENT_TARGET: $(TARGET_DEVICE_IDENTIFIER)
