@@ -40,15 +40,28 @@ packages:
     from: "1.0.0"
 
 targets:
-  SilentCueStub:
-    type: application
-    platform: iOS
+  SCCoordinator:
+    type: framework
+    platform: watchOS
+    sources:
+      - path: SCCoordinator
+    dependencies:
+      - package: ComposableArchitecture
+        product: ComposableArchitecture
+      - package: Dependencies
+        product: Dependencies
+      - package: CasePaths
+        product: CasePaths
+      - package: SwiftNavigation
+        product: SwiftNavigation
+      - package: Clocks
+        product: Clocks
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue
-        TARGETED_DEVICE_FAMILY: "1"
+        PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue.Coordinator
         GENERATE_INFOPLIST_FILE: YES
-    sources: []
+        ENABLE_BITCODE: NO
+        SKIP_INSTALL: NO
 
   "SilentCue Watch App":
     type: application
@@ -66,6 +79,7 @@ targets:
         product: SwiftNavigation
       - package: Clocks
         product: Clocks
+      - target: SCCoordinator
     settings:
       base:
         DEVELOPMENT_LANGUAGE: en
@@ -106,6 +120,7 @@ targets:
       - path: SilentCue Watch AppTests
     dependencies:
       - target: "SilentCue Watch App"
+      - target: SCCoordinator
       - package: ComposableArchitecture
         product: ComposableArchitecture
       - package: Dependencies
@@ -126,37 +141,18 @@ targets:
         Release:
           PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue.watchkitapp.Tests
 
-  "SilentCue Watch AppUITests":
-    type: bundle.ui-testing
-    platform: watchOS
-    sources:
-      - path: SilentCue Watch AppUITests
-    dependencies:
-      - target: "SilentCue Watch App"
-    settings:
-      base:
-        DEVELOPMENT_TARGET: $(TARGET_DEVICE_IDENTIFIER)
-        TEST_TARGET_NAME: "SilentCue Watch App"
-        GENERATE_INFOPLIST_FILE: YES
-        ENABLE_BITCODE: NO
-      configs:
-        Debug:
-          PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue.watchkitapp.UITests
-        Release:
-          PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue.watchkitapp.UITests
-
 schemes:
   "SilentCue Watch App":
     build:
       targets:
         "SilentCue Watch App": [running, testing, analyzing, archiving]
+        SCCoordinator: [running, testing, analyzing, archiving]
     run:
       config: Debug
     test:
       config: Debug
       targets:
         - "SilentCue Watch AppTests"
-        - "SilentCue Watch AppUITests"
     archive:
       buildConfiguration: Release
 
@@ -168,12 +164,3 @@ schemes:
       config: Debug
       targets:
         - "SilentCue Watch AppTests"
-
-  "SilentCue Watch AppUITests":
-    build:
-      targets:
-        "SilentCue Watch AppUITests": test
-    test:
-      config: Debug
-      targets:
-        - "SilentCue Watch AppUITests"
