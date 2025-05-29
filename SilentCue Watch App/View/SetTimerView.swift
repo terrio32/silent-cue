@@ -1,8 +1,9 @@
 import SwiftUI
+import ComposableArchitecture
+import SCCoordinator
 
 struct SetTimerView: View {
-    var onSettingsButtonTapped: () -> Void
-    var onTimerStart: () -> Void
+    let store: StoreOf<SCCoordinator>
     @State private var selectedMinutes = 5
 
     var body: some View {
@@ -17,7 +18,9 @@ struct SetTimerView: View {
         .navigationTitle("Silent Cue")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: onSettingsButtonTapped) {
+                Button {
+                    ViewStore(store).send(.push(SettingsView.self))
+                } label: {
                     Image(systemName: "gearshape.fill")
                         .resizable()
                         .frame(width: 16, height: 16)
@@ -60,7 +63,9 @@ struct SetTimerView: View {
     }
 
     private var startButton: some View {
-        Button(action: onTimerStart) {
+        Button {
+            ViewStore(store).send(.push(CountdownView.self))
+        } label: {
             Text("開始")
                 .font(.system(size: 18, weight: .medium))
                 .frame(maxWidth: .infinity)
@@ -92,10 +97,12 @@ struct ControlButtonStyle: ButtonStyle {
 
 #if DEBUG
     #Preview {
-        NavigationView {
+        NavigationStack {
             SetTimerView(
-                onSettingsButtonTapped: {},
-                onTimerStart: {}
+                store: Store(
+                    initialState: SCCoordinator.State(),
+                    reducer: { SCCoordinator() }
+                )
             )
         }
     }

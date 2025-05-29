@@ -1,5 +1,3 @@
-# $ mint run xcodegen generate
-
 name: SilentCue
 options:
   deploymentTarget:
@@ -63,6 +61,16 @@ targets:
         ENABLE_BITCODE: NO
         SKIP_INSTALL: NO
 
+  SilentCueStub:
+    type: application
+    platform: iOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.SilentCue
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+    sources: []
+
   "SilentCue Watch App":
     type: application
     platform: watchOS
@@ -79,7 +87,6 @@ targets:
         product: SwiftNavigation
       - package: Clocks
         product: Clocks
-      - target: SCCoordinator
     settings:
       base:
         DEVELOPMENT_LANGUAGE: en
@@ -109,7 +116,6 @@ targets:
           - background-fetch
           - background-processing
         WKBackgroundRefresh: true
-        WKCompanionAppBundleIdentifier: com.akitorahayashi.SilentCue
         WKApplication: true
         WKRunsIndependentlyOfCompanionApp: true
 

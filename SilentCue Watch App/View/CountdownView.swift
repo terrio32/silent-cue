@@ -25,7 +25,7 @@ struct CountdownView: View {
     @ViewBuilder
     private func timeDisplay(displayTime: String, remainingSeconds: Int) -> some View {
         VStack {
-            Text(remainingSeconds >= 3600 ? "時間  :  分" : "分  :  秒")
+            Text("分  :  秒")
                 .font(.system(size: 14, weight: .regular))
                 .foregroundStyle(.secondary)
 

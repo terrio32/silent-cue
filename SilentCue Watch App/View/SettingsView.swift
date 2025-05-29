@@ -1,7 +1,9 @@
 import SwiftUI
+import ComposableArchitecture
+import SCCoordinator
 
 struct SettingsView: View {
-    @Environment(\.dismiss) var dismiss
+    let store: StoreOf<SCCoordinator>
     @State private var selectedHapticType = "Type1"
     let hapticTypes = ["Type1", "Type2", "Type3"]
 
@@ -31,7 +33,7 @@ struct SettingsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    dismiss()
+                    ViewStore(store).send(.pop)
                 } label: {
                     Image(systemName: "chevron.left")
                         .aspectRatio(contentMode: .fit)
@@ -43,6 +45,13 @@ struct SettingsView: View {
 
 #if DEBUG
     #Preview {
-        SettingsView()
+        NavigationStack {
+            SettingsView(
+                store: Store(
+                    initialState: SCCoordinator.State(),
+                    reducer: { SCCoordinator() }
+                )
+            )
+        }
     }
 #endif
